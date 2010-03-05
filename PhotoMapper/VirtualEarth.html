@@ -1,0 +1,572 @@
+<html xmlns ="http://www.w3.org/1999/xhtml" >
+    <head>
+        <title>Virtual Earth</title>
+        <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2"></script>
+	    <script type="text/javascript">
+            var map = null;
+            var layers = [];
+            var centerAtLastResult = false;
+            var disambiguationMode = 0;
+            var waypoints = [];
+             
+            //---------------------------------------------------------------------------------------
+            function startVE()
+            {
+            	map = new VEMap('myMap');
+            	map.LoadMap();
+		        map.SetScaleBarDistanceUnit(VEDistanceUnit.Kilometers);
+		        
+		        map.AttachEvent("onclick", onclick);
+		        map.AttachEvent("ondoubleclick", ondoubleclick);
+		        map.AttachEvent("onmouseover", onmouseover);
+		        map.AttachEvent("onmouseout", onmouseout);
+		        map.AttachEvent("onmousemove", onmousemove);
+		        map.AttachEvent("onmousewheel", onmousewheel);
+		    }
+            
+            //---------------------------------------------------------------------------------------
+            function onclick(e)
+            {
+            try
+            {
+                var pixel = new VEPixel(e.mapX, e.mapY);
+                var LL = map.PixelToLatLong(pixel);
+                window.external.onclick(LL.Latitude, LL.Longitude, e.elementID, e.altKey, e.ctrlKey, e.shiftKey, e.leftMouseButton, e.rightMouseButton);    
+                }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+            }
+            
+            //---------------------------------------------------------------------------------------
+            function ondoubleclick(e)
+            {
+            try
+            {
+                var pixel = new VEPixel(e.mapX, e.mapY);
+                var LL = map.PixelToLatLong(pixel);
+                window.external.ondoubleclick(LL.Latitude, LL.Longitude, e.elementID, e.altKey, e.ctrlKey, e.shiftKey);        
+                }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+            }
+            
+            //---------------------------------------------------------------------------------------
+            function onmouseover(e)
+            {
+            try
+            {
+                var pixel = new VEPixel(e.mapX, e.mapY);
+                var LL = map.PixelToLatLong(pixel);
+                window.external.onmouseover(LL.Latitude, LL.Longitude, e.elementID, e.altKey, e.ctrlKey, e.shiftKey);        
+                }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+            }
+            
+            //---------------------------------------------------------------------------------------
+            function onmouseout(e)
+            {
+            try
+            {
+                var pixel = new VEPixel(e.mapX, e.mapY);
+                var LL = map.PixelToLatLong(pixel);
+                window.external.onmouseout(LL.Latitude, LL.Longitude, e.elementID, e.altKey, e.ctrlKey, e.shiftKey);        
+                }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+            }
+            
+            //---------------------------------------------------------------------------------------
+            function onmousemove(e)
+            {
+            try
+            {
+                var pixel = new VEPixel(e.mapX, e.mapY);
+                try
+                {
+                var LL = map.PixelToLatLong(pixel);
+                }
+                catch(err) {} 
+                window.external.onmousemove(LL.Latitude, LL.Longitude, e.elementID, e.altKey, e.ctrlKey, e.shiftKey, e.leftMouseButton, e.rightMouseButton);    
+                }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+            }
+            
+            //---------------------------------------------------------------------------------------
+            // The coordinate values returned in Firefox 1.5 and 2.0 are not correct (See MS doc).
+            function onmousewheel(e)
+            {
+                try
+                {
+                    var pixel = new VEPixel(e.mapX, e.mapY);
+                    var LL = map.PixelToLatLong(pixel, map.GetZoomLevel());
+                    window.external.onmousewheel(LL.Latitude, LL.Longitude, e.elementID, e.altKey, e.ctrlKey, e.shiftKey);        
+                }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message + '<\p>' + e.mapX + ' - ' + e.mapY);
+                }  
+            }
+            
+            //---------------------------------------------------------------------------------------
+            function zoomIn()
+            {
+                map.ZoomIn();
+            }
+            
+            //---------------------------------------------------------------------------------------
+            function zoomOut()
+            {
+                map.ZoomOut();
+            }
+            
+            //---------------------------------------------------------------------------------------
+            function setZoomLevel(zoomLevel)
+            {
+                map.SetZoomLevel(zoomLevel);
+            }
+            
+            //---------------------------------------------------------------------------------------
+            function getZoomLevel()
+            {
+                return map.GetZoomLevel();
+            }
+            
+            //---------------------------------------------------------------------------------------
+            function setDistanceUnit(unit)
+            {
+                if(unit == 0)
+                {
+                    map.SetScaleBarDistanceUnit(VEDistanceUnit.Kilometers);
+                }
+                else
+                {
+                    map.SetScaleBarDistanceUnit(VEDistanceUnit.Miles);
+                }
+            }
+            
+            //---------------------------------------------------------------------------------------
+            function findLocation(location) 
+	        {
+	        try
+	        {
+	            map.Find(null, location); 
+	            }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+            function setCenter(Longitude, latitude) 
+	        {
+	        try
+	        {
+	            map.SetCenter(new VELatLong(latitude, Longitude, 0, VEAltitudeMode.Default)); 
+	            }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+            function addShapeLayer(title, description) 
+	        {
+	        try
+	        {
+	            var layer = new VEShapeLayer();
+	            layer.SetTitle(title);
+	            layer.SetDescription(description)
+	            map.AddShapeLayer(layer);
+	            
+	            layers[layers.length] = layer;
+	            }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+            function deleteShapeLayer(title) 
+	        {
+	        	            var found = false;
+	        	            
+	        	            try
+	        	            {
+	            
+	            for(var index = 0;index < layers.length; index++)
+	            {
+	                if(layers[index].GetTitle() == title)
+	                {
+	                    map.DeleteShapeLayer(layers[index]);
+	                    layers = layers.slice(index, 1);
+	                    
+	                    found = true;
+	                    
+	                    break;
+	                }
+	            }
+	            }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+	            
+	            return found; 
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+            function deleteAllShapeLayers() 
+	        {
+	            map.DeleteAllShapeLayers();
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+            function setDisambiguationMode(mode) 
+	        {
+	            disambiguationMode = mode;
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+            function deletePushPin(id) 
+	        {
+	            var shape = map.GetShapeByID(id);
+	            if(shape != null)
+	            {
+	                map.DeleteShape(shape);
+	            }
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+            function deleteAllShapes() 
+	        {
+	           map.DeleteAllShapes();
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+            function deleteDirections() 
+	        {
+	           map.DeleteRoute();
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+	        function addPushPin(latitude, Longitude, pTitle, pLayer, pImage, pDescription)
+	        {
+	        var newShape;
+	        
+	        try
+	        {
+	            newShape = new VEShape(VEShapeType.Pushpin, new VELatLong(latitude, Longitude, 0, VEAltitudeMode.Default));  
+	            
+	            
+	            newShape.SetTitle(pTitle);
+	            newShape.SetDescription(pDescription); 
+	            
+	            if(pImage != "")
+	            {
+	                newShape.SetCustomIcon(pImage);
+	            } 
+	            
+	            if(pLayer == "")
+	            {
+	                map.AddShape(newShape);
+	            }
+	            else
+	            {
+	                for(var index = 0;index < layers.length; index++)
+	                {
+	                    if(layers[index].GetTitle() == pLayer)
+	                    {
+	                        layers[index].AddShape(newShape);
+	                        
+	                        break;
+	                    }
+	                }    
+	            }
+	            
+	            }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+	            
+	            return newShape.GetID();
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+            function setShapeLayerVisible(title, visible) 
+	        {
+	            var found = false;
+	            
+	            try
+	            {
+	            for(var index = 0;index < layers.length; index++)
+	            {
+	                if(layers[index].GetTitle() == title)
+	                {
+	                    if(visible)
+	                    {
+	                        layers[index].Show();
+	                    }
+	                    else
+	                    {
+	                        layers[index].Hide();
+	                    }
+	                    
+	                    found = true;
+	                    
+	                    break;
+	                }
+	            }
+	            }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+	            
+	            return found; 
+	        }
+            
+            //---------------------------------------------------------------------------------------
+	        function maxSize() 
+	        { 
+	            width = document.body.clientWidth; height = document.body.clientHeight; if (map) { map.Resize(width, height); } 
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+	        function setMapStyle(style) 
+	        { 
+	            switch(style)
+	            {
+	                case 0:
+	                    map.SetMapStyle(VEMapStyle.Road);
+	                    break;
+	                case 1:
+	                    map.SetMapStyle(VEMapStyle.Aerial);
+	                    break;
+	                case 2:
+	                    map.SetMapStyle(VEMapStyle.Birdseye);
+	                    break;
+	                case 3:
+	                    map.SetMapStyle(VEMapStyle.Hybrid);
+	                    break;
+	            }
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+	        function setDashboardStyle(style) 
+	        { 
+	            switch(style)
+	            {
+	                case 0:
+	                    map.SetDashboardSize(VEDashboardSize.Tiny);
+	                    break;
+	                case 1:
+	                    map.SetDashboardSize(VEDashboardSize.Small);
+	                    break;
+	                case 2:
+	                    map.SetDashboardSize(VEDashboardSize.Normal);
+	                    break;
+	            }
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+            function find(what, location, center) 
+	        { 
+	            centerAtLastResult = center;
+	            
+	            map.Find(
+	                what,                   // what 
+	                location,               // where 
+	                null,                   // find type
+	                null,                   // shapeLayer 
+	                0,                      // startIndex 
+ 	                20,                     // numberOfResults 
+	                false,                  // showResults 
+	                false,                  // createResults 
+	                false,                  // useDefaultDisambiguation 
+	                false,                  // show best view
+	                FindCallback); 
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+	        function clearRouteWaypoints()
+	        {
+                	waypoints = [];            
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+	        function addRouteWaypoint(Longitude, latitude)
+	        {
+	            waypoints.push(new VELatLong(latitude, Longitude, 0, VEAltitudeMode.Default));
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+	        function getDirections(displayRoute, setBestMapView, routeMode, distanceMode, optimizeMode)
+	        {
+	            var options = new VERouteOptions;
+                options.DrawRoute = displayRoute;
+                options.SetBestMapView = setBestMapView;
+                options.RouteCallback  = RouteCallback;
+                options.ShowDisambiguation = true;
+                options.DistanceUnit = (distanceMode == 0 ? VERouteDistanceUnit.Kilometer : VERouteDistanceUnit.Mile);
+                options.RouteMode = (routeMode == 0 ? VERouteMode.Walking : VERouteMode.Driving);
+                options.RouteOptimize = (optimizeMode == 0 ? VERouteOptimize.MinimizeTime : VERouteOptimize.MinimizeDistance );
+                	        
+	            map.GetDirections(waypoints, options);
+	            
+	            return waypoints.length;
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+	        function addPolyline(title, description, layer, linewidth)
+	        {
+	            var newShape;
+	            try
+	            {
+	            newShape = new VEShape(VEShapeType.Polyline, waypoints);  
+	            newShape.SetTitle(title);
+	            newShape.SetDescription(description); 
+	            newShape.SetLineWidth(linewidth);
+	            
+	            if(layer == "")
+	            {
+	                map.AddShape(newShape);
+	            }
+	            else
+	            {
+	                for(var index = 0;index < layers.length; index++)
+	                {
+	                    if(layers[index].GetTitle() == layer)
+	                    {
+	                        layers[index].AddShape(newShape);
+	                        
+	                        break;
+	                    }
+	                }    
+	            }
+	            }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+	            
+	            return newShape.GetID();
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+	        function addPolygon(title, description, layer, linewidth)
+	        {
+	        
+	            var newShape; 
+	            try
+	            {
+	            
+	            newShape = new VEShape(VEShapeType.Polygon, waypoints);  
+	            newShape.SetTitle(title);
+	            newShape.SetDescription(description); 
+	            newShape.SetLineWidth(linewidth);
+	            
+	            if(layer == "")
+	            {
+	                map.AddShape(newShape);
+	            }
+	            else
+	            {
+	                for(var index = 0;index < layers.length; index++)
+	                {
+	                    if(layers[index].GetTitle() == layer)
+	                    {
+	                        layers[index].AddShape(newShape);
+	                        
+	                        break;
+	                    }
+	                }    
+	            }
+	            }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+	            
+	            return newShape.GetID();
+	        }
+	        
+	        //---------------------------------------------------------------------------------------
+	        function RouteCallback (route)
+            {
+                // Unroll route
+                var legs     = route.RouteLegs;
+                var turns    = "";
+                var numTurns = 0;
+                var leg      = null;
+
+                try
+                {
+                    // Get intermediate legs
+                    for(var i = 0; i < legs.length; i++)
+                    {
+                        // Get this leg so we don't have to derefernce multiple times
+                        leg = legs[i];  // Leg is a VERouteLeg object
+                              
+                        // Unroll each intermediate leg
+                        var turn = null;  // The itinerary leg
+                              
+                        for(var j = 0; j < leg.Itinerary.Items.length; j ++)
+                        {
+                            turn = leg.Itinerary.Items[j];  // turn is a VERouteItineraryItem object
+                            numTurns++;
+                            turns += turn.Text + "~" + turn.Distance.toFixed(1) + "~" + turn.Time + "|";
+                        }
+                    }
+
+                    window.external.OnDirectionsFinished(route.Time , route.Distance.toFixed(1), turns);
+                }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+            }
+          
+
+            
+	        //---------------------------------------------------------------------------------------
+	        function FindCallback (shapeLayer, findResults, places, moreResults, errorMsg)
+            {
+               if(places == null)
+               {
+                  window.external.OnJavascriptLocationFound(null, null, errorMsg);
+               }
+               else
+               {
+                    var bestPlace = places[0];
+                    try
+                    {
+                        window.external.OnJavascriptLocationFound(bestPlace.LatLong.Latitude, bestPlace.LatLong.Longitude, errorMsg);
+                    }
+                catch(err)
+                {
+                    alert(err.source + ':' + err.message);
+                } 
+               }
+            }
+        </script>
+    </head>
+    <body style="margin: 0px">
+    <div style="overflow: hidden; width: 100%; height: 100%;" id="myMap"></div>
+    </body>
+</html>

@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoMapper", "PhotoMapper\PhotoMapper.csproj", "{D1894009-FB30-477D-8230-BB3317706BD6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoMapper.Core", "PhotoMapper.Core\PhotoMapper.Core.csproj", "{7D888987-0952-49FE-AF75-AC923FA8E637}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D1894009-FB30-477D-8230-BB3317706BD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1894009-FB30-477D-8230-BB3317706BD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1894009-FB30-477D-8230-BB3317706BD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1894009-FB30-477D-8230-BB3317706BD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D888987-0952-49FE-AF75-AC923FA8E637}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D888987-0952-49FE-AF75-AC923FA8E637}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D888987-0952-49FE-AF75-AC923FA8E637}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D888987-0952-49FE-AF75-AC923FA8E637}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

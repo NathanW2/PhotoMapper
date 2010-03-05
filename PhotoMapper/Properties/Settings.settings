@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PhotoMapper.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="OutName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">TestPhotoMapper</Value>
+    </Setting>
+    <Setting Name="LoadMap" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="OutPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Temp\TestPics</Value>
+    </Setting>
+    <Setting Name="NoListBox" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
