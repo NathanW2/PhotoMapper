@@ -93,6 +93,14 @@ namespace PhotoMapper
                 string mifpath = this.GenerateMIFFile(path, name, pictures);
                 this.ReportProgress("Generated MIF file at " + mifpath);
             }
+            else if (flag == FormatFlags.TAB)
+            {
+                string mifpath = this.GenerateMIFFile(path, name, pictures);
+                this.ReportProgress("Generating TAB file");
+                string tabpath = this.GenerateTABFile(mifpath);
+                this.ReportProgress("Generated TAB file at " + tabpath);
+                File.Delete(mifpath);
+            }
         }
     }
 }

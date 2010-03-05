@@ -106,7 +106,7 @@ namespace PhotoMapper
         {
             get
             {
-                return this.image.Keys.Contains("Exif.GPSInfo.GPSImgDirection");
+                return this.image.ContainsKey("Exif.GPSInfo.GPSImgDirection");
             }
         }
 
