@@ -25,12 +25,11 @@ namespace PhotoMapper.CommandLine
                 string[] values = arg.Split(new char[] {':'},2);
                 string key = values[0].TrimStart('/');
 
-                // The help key is special just add it to the mappings without a value.
-                if (key == "?")
+                if (key == "?" || values.Length == 1)
                 {
                     mappings.Add(key, "");
                     continue;
-                } 
+                }
 
                 mappings.Add(key, values[1]);
             }
@@ -74,7 +73,7 @@ namespace PhotoMapper.CommandLine
         {
             get
             {
-                return this["i"];
+                return this["indir"];
             }
         }
 
@@ -98,18 +97,14 @@ namespace PhotoMapper.CommandLine
         {
             get
             {
-                string format = this["format"];
-                switch (format)
-                {
-                    case "MIF":
-                        return ImageProcessor.FormatFlags.MIF;
-                    case "TAB":
-                        return ImageProcessor.FormatFlags.TAB;
-                    case "MIF|TAB":
-                        return ImageProcessor.FormatFlags.MIF | ImageProcessor.FormatFlags.TAB;
-                    default:
-                        throw new NotSupportedException(format + " tag is not supported");
-                }
+                if (this.ContainsArg("tab") && this.ContainsArg("mif"))
+                    return ImageProcessor.FormatFlags.MIF | ImageProcessor.FormatFlags.TAB;
+                else if (this.ContainsArg("mif"))
+                    return ImageProcessor.FormatFlags.MIF;
+                else if (this.ContainsArg("tab"))
+                    return ImageProcessor.FormatFlags.TAB;
+                else
+                    return ImageProcessor.FormatFlags.None;
             }
         }
     }
