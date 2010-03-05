@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("PhotoMapper.Cmd")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Southern Downs Regional Council")]
+[assembly: AssemblyCompany("Nathan Woodrow")]
 [assembly: AssemblyProduct("PhotoMapper.Cmd")]
-[assembly: AssemblyCopyright("Copyright © Southern Downs Regional Council 2010")]
+[assembly: AssemblyCopyright("Copyright @ Nathan Woodrow 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

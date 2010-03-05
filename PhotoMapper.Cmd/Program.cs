@@ -84,8 +84,8 @@ namespace PhotoMapper.Cmd
        /indir:      Directory that contains the files to be processed, must be in quotes.
        /outdir:     Directory where the final MIF or TAB will be generated.
        /outname:    Name of the generated MIF or TAB file.
-       /mif         Generates just MIF file.
-       /tab         Generates just TAB file.
+       /mif         Generates MIF file.
+       /tab         Generates TAB file.
        /?           Prints this help message");
         }
     }

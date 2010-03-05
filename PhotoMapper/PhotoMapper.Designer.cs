@@ -1,6 +1,6 @@
 ﻿namespace PhotoMapper
 {
-    partial class Form1
+    partial class PhotoMapper
     {
         /// <summary>
         /// Required designer variable.
@@ -288,7 +288,7 @@
             this.loadMapCheckBox.Text = "Show map (needs app restart)";
             this.loadMapCheckBox.UseVisualStyleBackColor = true;
             // 
-            // Form1
+            // PhotoMapper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -301,10 +301,13 @@
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.selectButton);
             this.Controls.Add(this.ucVEarth);
+            this.HelpButton = true;
+            this.KeyPreview = true;
             this.MaximumSize = new System.Drawing.Size(774, 2000);
             this.MinimumSize = new System.Drawing.Size(774, 413);
-            this.Name = "Form1";
+            this.Name = "PhotoMapper";
             this.Text = "Form1";
+            this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.PhotoMapper_HelpRequested);
             ((System.ComponentModel.ISupportInitialize)(this.settingsBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.tabControl1.ResumeLayout(false);

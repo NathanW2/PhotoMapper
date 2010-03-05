@@ -13,7 +13,7 @@ using System.Reflection;
 
 namespace PhotoMapper
 {
-    public partial class Form1 : Form
+    public partial class PhotoMapper : Form
     {
         public delegate void Action();
         BackgroundWorker maploader = new BackgroundWorker();
@@ -23,7 +23,7 @@ namespace PhotoMapper
         // Create a list of locations to search for
         List<SearchLocation> locations = new List<SearchLocation>();
 
-        public Form1()
+        public PhotoMapper()
         {
             InitializeComponent();
             this.Text = "Photo Mapper : Version " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -357,6 +357,13 @@ namespace PhotoMapper
         private void folderRadioButton_CheckedChanged(object sender, EventArgs e)
         {
             this.SetButtonBasedOnCurrentOperation();
+        }
+
+        private void PhotoMapper_HelpRequested(object sender, HelpEventArgs hlpevent)
+        {
+            AboutBox1 about = new AboutBox1();
+            about.ShowDialog(this);
+            hlpevent.Handled = true;
         }
     }
 }

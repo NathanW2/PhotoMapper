@@ -1,5 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>/indir:"M:\SupportMaps\CurrentEdit\To Be Processed\2010-02-23" /outdir:"C:\Temp\CommandLineTest" /outname:"CommandTest" /format:MIF</StartArguments>
+    <StartArguments>
+    </StartArguments>
   </PropertyGroup>
 </Project>
