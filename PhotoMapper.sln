@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoMapper.Core", "PhotoMa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoMapper.Cmd", "PhotoMapper.Cmd\PhotoMapper.Cmd.csproj", "{18B38B96-618B-485C-B1F0-04386B3BB31E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoMapper.Core.Test", "PhotoMapper.Core.Test\PhotoMapper.Core.Test.csproj", "{4E736BF6-9F57-4A4A-9A4E-8834FF15C8C8}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PhotoMapper.Installer", "PhotoMapper.Installer\PhotoMapper.Installer.vdproj", "{D2B15653-F134-48B2-B256-243001DDC070}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +29,12 @@ Global
 		{18B38B96-618B-485C-B1F0-04386B3BB31E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18B38B96-618B-485C-B1F0-04386B3BB31E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18B38B96-618B-485C-B1F0-04386B3BB31E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E736BF6-9F57-4A4A-9A4E-8834FF15C8C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E736BF6-9F57-4A4A-9A4E-8834FF15C8C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E736BF6-9F57-4A4A-9A4E-8834FF15C8C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E736BF6-9F57-4A4A-9A4E-8834FF15C8C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2B15653-F134-48B2-B256-243001DDC070}.Debug|Any CPU.ActiveCfg = Debug
+		{D2B15653-F134-48B2-B256-243001DDC070}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -47,7 +47,6 @@ namespace PhotoMapper
 
         public void LoadMap()
         {
-            Log.WriteLine("Loading Map");
             if (Properties.Settings.Default.LoadMap)
             {
                 this.ucVEarth.HTMLLocation = Path.Combine(Application.StartupPath, "VirtualEarth.html");
@@ -55,13 +54,10 @@ namespace PhotoMapper
                 ucVEarth.VE_SetZoomLevel(15);
                 this.MapIsLoaded = true;
             }
-            Log.WriteLine("Map Loaded");
         }
 
         private void PlacePictureOnMap(Picture picture)
         {
-            Log.WriteLine("Mapping picture: " + picture.Name);
-
             SearchLocation a = new SearchLocation();
             a.Longitude = picture.GPSLongitude;  // where to search for (address)
             a.Latitude = picture.GPSLatitude;
@@ -71,13 +67,10 @@ namespace PhotoMapper
             locations.Add(a);
             ucVEarth.VE_AddPushPin(a);
             ucVEarth.VE_SetCenter(a);
-
-            Log.WriteLine("Picture mapped " + picture.Name);
         }
 
         void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Log.WriteLine("Saving settings");
             Properties.Settings.Default.Save();
         }
 
@@ -85,7 +78,6 @@ namespace PhotoMapper
         {
             if (this.fileRadioButton.Checked)
             {
-                Log.WriteLine("Selecting Images");
                 this.filePicker.Filter = "JPEG Images|*.jpg";
 
                 if (filePicker.ShowDialog() == DialogResult.OK)
@@ -96,7 +88,6 @@ namespace PhotoMapper
 
             if (this.folderRadioButton.Checked)
             {
-                Log.WriteLine("Selecting Folder");
                 FolderBrowserDialog folderpicker = new FolderBrowserDialog();
                 if (folderpicker.ShowDialog() == DialogResult.OK)
                 {
@@ -139,7 +130,6 @@ namespace PhotoMapper
             }
 
             this.ucVEarth.VE_AddShapeLayer("Photos", "Photos");
-
             pictureloader = new BackgroundWorker();
             pictureloader.WorkerSupportsCancellation = true;
             pictureloader.WorkerReportsProgress = true;
@@ -153,8 +143,15 @@ namespace PhotoMapper
 
         void pictureloader_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.SetButtonBasedOnCurrentOperation();
-            this.PrintStatus(String.Format("{0} pictures loaded and ready to process\n", this.filestoProcess.Count));
+            if (e.Error != null)
+            {
+                MessageBox.Show(e.Error.Message + " : " + e.Error.StackTrace);
+            }
+            else
+            {
+                this.SetButtonBasedOnCurrentOperation();
+                this.PrintStatus(String.Format("{0} pictures loaded and ready to process\n", this.filestoProcess.Count));
+            }
         }
 
         void pictureloader_DoWork(object sender, DoWorkEventArgs e)
@@ -230,7 +227,6 @@ namespace PhotoMapper
             List<Picture> finalfilestoprocess;
 
             this.PrintStatus("Building list of photos to process\n");
-            this.PrintStatus("Thinking about next holiday..:P\n");
             if (this.fileListBox.CheckedItems.Count > 0)
             {
                 finalfilestoprocess = new List<Picture>();
@@ -269,7 +265,10 @@ namespace PhotoMapper
 
         void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.PrintStatus("Complete!\n");
+            if (e.Error != null)
+                MessageBox.Show(e.Error.Message + " : " + e.Error.StackTrace);
+            else
+                this.PrintStatus("Complete!\n");
         }
 
         public void PrintStatus(string msg)

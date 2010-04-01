@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using PhotoMapper.CommandLine;
+using System.Threading;
 
 namespace PhotoMapper.Cmd
 {
