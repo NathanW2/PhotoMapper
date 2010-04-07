@@ -181,7 +181,6 @@ namespace PhotoMapper
                     {
                         if (!Properties.Settings.Default.NoListBox) this.fileListBox.Items.Add(pic, true);
 
-
                         if (this.MapIsLoaded)
                         {
                             if (pic.HasGPSInformation)

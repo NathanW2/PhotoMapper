@@ -27,7 +27,7 @@ namespace PhotoMapper
 
         public double GPSLatitude
         {
-            get { return this.image.GPSLatitude; }
+            get {return this.image.GPSLatitude; }
             set { this.image.GPSLatitude = value; }
         }
 
@@ -72,7 +72,6 @@ namespace PhotoMapper
         {
             get
             {
-
                 if (this.HasCompassInfo)
                 {
                     string value = (this.image["Exif.GPSInfo.GPSImgDirectionRef"] as Exiv2Net.AsciiString).Value;
@@ -118,10 +117,26 @@ namespace PhotoMapper
         {
             get
             {
-                return (this.image.ContainsKey(Tags.GPSLatitude) &&
-                        this.image.ContainsKey(Tags.GPSLatitudeRef) &&
-                        this.image.ContainsKey(Tags.GPSLongitude) &&
-                        this.image.ContainsKey(Tags.GPSLongitudeRef));
+                object test;
+                return ((this.image.ContainsKey(Tags.GPSLatitude) && !ThrowException(() => test = this.GPSLatitude)) &&
+                        (this.image.ContainsKey(Tags.GPSLatitudeRef) && !ThrowException(() => test = this.image[Tags.GPSLatitudeRef])) &&
+                        (this.image.ContainsKey(Tags.GPSLongitude) && !ThrowException(() => test = this.GPSLongitude)) &&
+                        (this.image.ContainsKey(Tags.GPSLongitudeRef)) && !ThrowException(() => test = this.image[Tags.GPSLongitudeRef]));
+            }
+        }
+
+        public delegate void Action();
+
+        public static bool ThrowException(Action method)
+        {
+            try
+            {
+                method.Invoke();
+                return false;
+            }
+            catch (Exception)
+            {
+                return true;            
             }
         }
     }
