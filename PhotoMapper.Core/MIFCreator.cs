@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 
-namespace PhotoMapper
+namespace PhotoMapper.Core
 {
     public class MIFCreator : IDisposable
     {
@@ -50,7 +49,7 @@ namespace PhotoMapper
 
         public void WriteData(int p, string file, DateTime date,string directionref, double direction)
         {
-            midwritter.WriteLine(p + " , " + file + "," + date.ToString("yyyyMMddHHmmssfff") + "," + directionref + "," + direction);
+            midwritter.WriteLine(p + "," + file + "," + date.ToString("yyyyMMddHHmmssfff") + "," + directionref + "," + direction);
         }
 
         #region IDisposable Members

@@ -35,6 +35,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\exiv2net.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -53,19 +57,19 @@
     <Compile Include="AboutBox1.Designer.cs">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
-    <Compile Include="PhotoMapper.cs">
+    <Compile Include="PhotoMapperUI.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PhotoMapper.Designer.cs">
-      <DependentUpon>PhotoMapper.cs</DependentUpon>
+    <Compile Include="PhotoMapperUI.Designer.cs">
+      <DependentUpon>PhotoMapperUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="AboutBox1.resx">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PhotoMapper.resx">
-      <DependentUpon>PhotoMapper.cs</DependentUpon>
+    <EmbeddedResource Include="PhotoMapperUI.resx">
+      <DependentUpon>PhotoMapperUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -77,6 +81,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="app.config" />
+    <None Include="Properties\DataSources\PhotoMapper.Core.About.datasource" />
+    <None Include="Properties\DataSources\PhotoMapper.Core.About1.datasource" />
     <None Include="Properties\DataSources\PhotoMapper.Properties.Settings.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

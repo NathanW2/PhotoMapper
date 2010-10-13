@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace PhotoMapper.CommandLine
+namespace PhotoMapper.Core.CommandLine
 {
     public class CommandLineArgs
     {
@@ -45,8 +44,8 @@ namespace PhotoMapper.CommandLine
                 {
                     return this.commandargs[argKey];
                 }
-                else
-                    throw new ArgumentOutOfRangeException(String.Format("Arg with key {0} could not be found", argKey)); 
+                
+                throw new ArgumentOutOfRangeException(String.Format("Arg with key {0} could not be found", argKey));
             }
         }
 
@@ -93,18 +92,20 @@ namespace PhotoMapper.CommandLine
             }
         }
 
-        public PhotoMapper.ImageProcessor.FormatFlags Format
+        public ImageProcessor.FormatFlags Format
         {
             get
             {
                 if (this.ContainsArg("tab") && this.ContainsArg("mif"))
                     return ImageProcessor.FormatFlags.MIF | ImageProcessor.FormatFlags.TAB;
-                else if (this.ContainsArg("mif"))
+                
+                if (this.ContainsArg("mif"))
                     return ImageProcessor.FormatFlags.MIF;
-                else if (this.ContainsArg("tab"))
+                
+                if (this.ContainsArg("tab"))
                     return ImageProcessor.FormatFlags.TAB;
-                else
-                    return ImageProcessor.FormatFlags.None;
+                
+                return ImageProcessor.FormatFlags.None;
             }
         }
     }

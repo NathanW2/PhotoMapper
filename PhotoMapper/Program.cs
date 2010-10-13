@@ -1,29 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Diagnostics;
-using System.IO;
-using PhotoMapper.CommandLine;
 using System.Threading;
+using log4net;
+using PhotoMapper.Core;
 
 namespace PhotoMapper
 {
     static class Program
     {
         /// <summary>
+        /// Gets the logger for this class.
+        /// </summary>
+        private static readonly ILog log = Logging.GetLog(typeof(Program));
+
+        /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(Program_UnhandledException);
+            Thread.GetDomain().UnhandledException += Program_UnhandledException;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new PhotoMapper());
+            Application.Run(new PhotoMapperUI());
         }
 
         static void Program_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            log.Error("UnhandledException",(Exception)e.ExceptionObject);
             MessageBox.Show(((Exception)e.ExceptionObject).Message);
         }        
     }

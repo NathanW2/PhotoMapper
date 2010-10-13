@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using Exiv2Net;
 
-namespace PhotoMapper
+namespace PhotoMapper.Core
 {
     public class Picture
     {
@@ -33,7 +31,7 @@ namespace PhotoMapper
 
         public double GPSLongitude
         {
-            get { return this.image.GPSLongitude; }
+            get { return this.image.GPSLongitude;}
             set { this.image.GPSLongitude = value; }
         }
 
@@ -77,10 +75,7 @@ namespace PhotoMapper
                     string value = (this.image["Exif.GPSInfo.GPSImgDirectionRef"] as Exiv2Net.AsciiString).Value;
                     return value == "T" ? "True North" : "Magnetic North";
                 }
-                else
-                {
-                    return "No Compass Info";
-                }
+                return "No Compass Info";
             }
         }
 
@@ -92,10 +87,7 @@ namespace PhotoMapper
                 {
                     return 360 - (this.image["Exif.GPSInfo.GPSImgDirection"] as Exiv2Net.UnsignedRational).Value[0].ToDouble();
                 }
-                else
-                {
-                    return 0.0;
-                }
+                return 0.0;
             }
         }
 
@@ -118,16 +110,21 @@ namespace PhotoMapper
             get
             {
                 object test;
-                return ((this.image.ContainsKey(Tags.GPSLatitude) && !ThrowException(() => test = this.GPSLatitude)) &&
-                        (this.image.ContainsKey(Tags.GPSLatitudeRef) && !ThrowException(() => test = this.image[Tags.GPSLatitudeRef])) &&
-                        (this.image.ContainsKey(Tags.GPSLongitude) && !ThrowException(() => test = this.GPSLongitude)) &&
-                        (this.image.ContainsKey(Tags.GPSLongitudeRef)) && !ThrowException(() => test = this.image[Tags.GPSLongitudeRef]));
+                return ((this.image.ContainsKey(Tags.GPSLatitude) && !ThrowsException(() => test = this.GPSLatitude)) &&
+                        (this.image.ContainsKey(Tags.GPSLatitudeRef) && !ThrowsException(() => test = this.image[Tags.GPSLatitudeRef])) &&
+                        (this.image.ContainsKey(Tags.GPSLongitude) && !ThrowsException(() => test = this.GPSLongitude)) &&
+                        (this.image.ContainsKey(Tags.GPSLongitudeRef)) && !ThrowsException(() => test = this.image[Tags.GPSLongitudeRef]));
             }
+        }
+
+        public void Save()
+        {
+            this.image.Save();
         }
 
         public delegate void Action();
 
-        public static bool ThrowException(Action method)
+        public static bool ThrowsException(Action method)
         {
             try
             {

@@ -18,9 +18,23 @@ namespace PhotoMapper
             this.labelCopyright.Text = AssemblyCopyright;
             this.labelCompanyName.Text = AssemblyCompany;
             this.textBoxDescription.Text = AssemblyDescription;
+            this.AssemblyInfoText.Text = LoadedAssemblies;
         }
 
         #region Assembly Attribute Accessors
+
+        public string LoadedAssemblies
+        {
+            get
+            {
+                string assemblies = "Loaded Assemblies \n\r ";
+                foreach (var assm in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    assemblies += assm.FullName + " \n\r ";
+                }
+                return assemblies;
+            }
+        }
 
         public string AssemblyTitle
         {

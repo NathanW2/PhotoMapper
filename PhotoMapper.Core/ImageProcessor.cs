@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using System.Text;
 using Enum.Extensions;
+using Exiv2Net;
 
-namespace PhotoMapper
+namespace PhotoMapper.Core
 {
     public class ImageProcessor
     {
@@ -109,6 +110,80 @@ namespace PhotoMapper
                 string tabpath = this.GenerateTABFile(mifpath);
                 this.ReportProgress("Deleting MIF file");
                 File.Delete(mifpath);
+            }
+        }
+
+        public IEnumerable<Picture> CheckForNullGPSInfo(List<Picture> pictures)
+        {
+            foreach (var picture in pictures)
+            {
+                if (!picture.HasGPSInformation)
+                    yield return picture;
+            }
+        }
+
+        private const string FileHeader = "FileName\tGPSLongitude\tGPSLatitude"; 
+
+        /// <summary>
+        /// Generates a tab delimited file that contains each image with null GPS info and a place to store the new coordinates.
+        /// 
+        /// This file can be directly reimported by the program. 
+        /// </summary>
+        /// <param name="pictures">The list of pictures to check.</param>
+        /// <param name="outdir">The output path for the resulting text file.</param>
+        /// <returns>A string containing the path to the new file.</returns>
+        public string GenerateTxtFileForNullGPS(List<Picture> pictures, string outdir)
+        {
+            List<Picture> nullGPSInfo = new List<Picture>(this.CheckForNullGPSInfo(pictures));
+
+            if (nullGPSInfo.Count == 0)
+            {
+                this.ReportProgress("No pictures with missing GPS information");
+                return null;
+            }
+
+            string outfile = Path.Combine(outdir,"NullGPSInfo.txt");
+            StreamWriter sw = new StreamWriter(outfile, false);
+
+            sw.WriteLine(FileHeader);
+
+            foreach (Picture picture in nullGPSInfo)
+            {
+                sw.WriteLine("{0}\t{1}\t{2}",picture.FileName,string.Empty,string.Empty);
+            }
+
+            this.ReportProgress("Generated file for missing GPS info files to " + outfile);
+
+            sw.Close();
+
+            return outfile;
+        }
+
+        public void UpdatePhotos(string infofile)
+        {
+            StreamReader reader = new StreamReader(infofile);
+            string line = reader.ReadLine();
+            
+            //If we are a header line just read the next line.
+            if (line == FileHeader)
+                line = reader.ReadLine();
+
+            while(!String.IsNullOrEmpty(line))
+            {
+                string[] values = line.Split('\t');
+
+                string filename = values[0];
+                string gpsLongitude = values[1];
+                string gpsLatitude = values[2];
+                
+                Picture image = new Picture(filename)
+                                    {
+                                        GPSLongitude = Convert.ToDouble(gpsLongitude),
+                                        GPSLatitude = Convert.ToDouble(gpsLatitude)
+                                    };
+                image.Save();
+
+                line = reader.ReadLine();
             }
         }
     }

@@ -1,76 +1,103 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
-using PhotoMapper.CommandLine;
-using System.Threading;
+using log4net;
+using PhotoMapper.Core;
+using PhotoMapper.Core.CommandLine;
 
 namespace PhotoMapper.Cmd
 {
     class Program
     {
+        /// <summary>
+        /// Gets the logger for this class.
+        /// </summary>
+        private static readonly ILog log = Logging.GetLog(typeof(Program));
+
         static void Main(string[] args)
         {
+            ImageProcessor imageProcessor = new ImageProcessor();
+
+            //Prints the status of the ImageProcessor to the console window.
+            imageProcessor.ProgessUpdated += Console.WriteLine;
+
             CommandLineArgs commandline = CommandLineArgs.ParseCommandLine(args);
 
-            /// Print the help information.
+            // Print the help information.
             if (commandline.ContainsArg("?"))
-            {
                 PrintHelp();
-            }
 
-            bool argsvaild = commandline.IsVaild(() =>
-            {
-                return commandline.ContainsArg("indir") &&
-                       commandline.ContainsArg("outdir") &&
-                       commandline.ContainsArg("outname") &&
-                       commandline.Format != ImageProcessor.FormatFlags.None;
-            });
+            if (commandline.ContainsArg("about"))
+                PrintAbout();
 
-            if (!argsvaild)
+            if (commandline.ContainsArg("indir") &&
+                commandline.ContainsArg("outdir") &&
+                commandline.ContainsArg("outname") &&
+                commandline.Format != ImageProcessor.FormatFlags.None)
             {
-                PrintHelp();
+                List<Picture> pictures = GetPhotos(commandline.InDir);
+                imageProcessor.ProcessPictures(commandline.OutDir, commandline.OutName, pictures, commandline.Format);
+
+                Console.WriteLine("Complete! " + pictures.Count + " pictures processed");
+
+#if DEBUG
+                Console.Read();
+#endif
                 return;
             }
 
-            string[] files = Directory.GetFiles(commandline.InDir, "*.jpg");
+            if (commandline.ContainsArg("checkgps")
+                && commandline.ContainsArg("outdir") 
+                && commandline.ContainsArg("indir"))
+            {
+                List<Picture> pictures = GetPhotos(commandline.InDir);
+                imageProcessor.GenerateTxtFileForNullGPS(pictures, commandline.OutDir);
+#if DEBUG
+                Console.Read();
+#endif
+                return; 
+            }
+
+            if (commandline.ContainsArg("fillgps") &&
+                commandline.ContainsArg("infofile"))
+            {
+                string infofile = commandline["infofile"];
+                imageProcessor.UpdatePhotos(infofile);
+                return;
+            }
+
+            //If we get here then we have invaild args.
+            PrintHelp();
+#if DEBUG
+                Console.Read();
+#endif
+            return; 
+        }
+
+        public static List<Picture> GetPhotos(string inputFrom)
+        {
+            string[] files = Directory.GetFiles(inputFrom, "*.jpg");
 
             if (files.Length == 0)
             {
                 Console.WriteLine("No files to process");
-                return;
+                return null;
             }
 
             Console.WriteLine("Building list of photos to process");
-            Console.WriteLine("Thinking about next holiday....");
             List<Picture> pics = new List<Picture>();
             foreach (var file in files)
             {
                 Picture pic = new Picture(file);
-                if (pic.HasGPSInformation)
-                    pics.Add(new Picture(file));
-                else
-                    Console.WriteLine(pic.FileName + " has not GPS information");
+                pics.Add(new Picture(file));
             }
 
-            if (pics.Count == 0)
-            {
-                Console.WriteLine("No files that where selected have GPS information");
-            }
-            else
-            {
-                ImageProcessor process = new ImageProcessor();
-                process.ProgessUpdated += new Action<string>(process_ProgessUpdated);
-
-                process.ProcessPictures(commandline.OutDir, commandline.OutName, pics, commandline.Format);
-            }
-            Console.WriteLine("Complete! " + pics.Count + " pictures processed");
-
+            return pics;
         }
 
-        static void process_ProgessUpdated(string obj)
+        private static void PrintAbout()
         {
-            Console.WriteLine(obj);
+            Console.WriteLine(About.AboutString);
         }
 
         public static void PrintHelp()
@@ -80,13 +107,23 @@ namespace PhotoMapper.Cmd
 ============Photo Mapper Command Help============
 ============by Nathan Woodrow============
 
-   PhotoMapper.exe /indir:[path] /outdir:[path] /outname:[path] [/mif] [/tab] [/?]
+To generate map files from photos:
+    PhotoMapper.exe /indir:[path] /outdir:[path] /outname:[path] [/mif] [/tab] [/?] [/infofile:[path]] 
+
+To check photos for missing GPS info:
+    PhotoMapper.exe /checkgps /indir:[path] /outdir:[path] 
+
+To update photos with GPS info:
+    PhotoMapper.exe /fillgps /indir:[path] /infofile:[path]    
    
        /indir:      Directory that contains the files to be processed, must be in quotes.
        /outdir:     Directory where the final MIF or TAB will be generated.
        /outname:    Name of the generated MIF or TAB file.
        /mif         Generates MIF file.
        /tab         Generates TAB file.
+       /checkgps    Checks each photo for GPS information, exports a tab delimited file that can be used to update photos.
+       /fillgps     Updates each photo listed in the /infofile with GPS info in /infofile
+       /infofile:   A tab delimited file that contains the list of photos and the GPS info to update.
        /?           Prints this help message");
         }
     }
