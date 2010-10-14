@@ -31,9 +31,9 @@ Version 1.5.1.0
 - Folder and File picker for input now remember last location.
 - Can sync output path with input path.
 - Added background logging.
-- Command line now supports updating image GPS info.
+- Supports updating image GPS info via command line.
     - See help file section 'Updating GPS Info' for details
-- Command line can output list of files with no GPS info, can be used to update images.";
+- Output list of files with no GPS info via command line";
             }
         }
     }
