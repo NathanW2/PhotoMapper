@@ -41,8 +41,8 @@ namespace PhotoMapper.Core
                         this.ReportProgress("   Working on ->" + file.Name);
                         double x = file.GPSLongitude;
                         double y = file.GPSLatitude;
-                        stream.WritePoint(x, y, file.Direction);
-                        stream.WriteData(0, file.Name.Trim(), file.DateTimeOriginal, file.DirectionRef, file.Direction);
+                        stream.WritePoint(x, y, file.MapInfoDirection);
+                        stream.WriteData(0, file.Name.Trim(), file.DateTimeOriginal, file.DirectionRef, file.MapInfoDirection);
                     }
                     else
                     {

@@ -99,18 +99,32 @@ namespace PhotoMapper.Core
             }
         }
 
-        public double Direction
+        /// <summary>
+        /// Returns the direction that works with MapInfo.  MapInfo uses back to front directions.
+        /// </summary>
+        public float MapInfoDirection
         {
             get
             {
                 if (this.HasCompassInfo)
                 {
-                    //return 360 - (this.image["Exif.GPSInfo.GPSImgDirection"] as Exiv2Net.UnsignedRational).Value[0].ToDouble();
+                    return 360 - (this.image[ExifTag.GPSImgDirection] as ExifURational).ToFloat();
                 }
-                return 0.0;
+                return 0;
             }
         }
 
+        public float Direction
+        {
+            get
+            {
+                if (this.HasCompassInfo)
+                {
+                    return (this.image[ExifTag.GPSImgDirection] as ExifURational).ToFloat();
+                }
+                return 0;
+            }
+        }
 
 
         public bool HasCompassInfo
