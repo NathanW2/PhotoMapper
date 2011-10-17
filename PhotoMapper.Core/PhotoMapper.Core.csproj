@@ -31,9 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="exiv2net, Version=0.3.3160.31451, Culture=neutral, PublicKeyToken=d97d0784606462fa, processorArchitecture=x86">
+    <Reference Include="ExifLibrary, Version=0.16.0.0, Culture=neutral, PublicKeyToken=95a98932199e0fa7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\PhotoMapper\exiv2net.dll</HintPath>
+      <HintPath>..\lib\ExifLibrary.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -54,11 +54,6 @@
     <Compile Include="MIFCreator.cs" />
     <Compile Include="Picture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="libexpat.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="log4net.config">

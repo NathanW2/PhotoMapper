@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Enum.Extensions;
-using Exiv2Net;
 
 namespace PhotoMapper.Core
 {
@@ -161,30 +160,30 @@ namespace PhotoMapper.Core
 
         public void UpdatePhotos(string infofile)
         {
-            StreamReader reader = new StreamReader(infofile);
-            string line = reader.ReadLine();
+            throw new NotImplementedException("Updating isn't supported yet");
+            //StreamReader reader = new StreamReader(infofile);
+            //string line = reader.ReadLine();
             
-            //If we are a header line just read the next line.
-            if (line == FileHeader)
-                line = reader.ReadLine();
+            ////If we are a header line just read the next line.
+            //if (line == FileHeader)
+            //    line = reader.ReadLine();
 
-            while(!String.IsNullOrEmpty(line))
-            {
-                string[] values = line.Split('\t');
+            //while(!String.IsNullOrEmpty(line))
+            //{
+            //    string[] values = line.Split('\t');
 
-                string filename = values[0];
-                string gpsLongitude = values[1];
-                string gpsLatitude = values[2];
+            //    string filename = values[0];
+            //    string gpsLongitude = values[1];
+            //    string gpsLatitude = values[2];
                 
-                Picture image = new Picture(filename)
-                                    {
-                                        GPSLongitude = Convert.ToDouble(gpsLongitude),
-                                        GPSLatitude = Convert.ToDouble(gpsLatitude)
-                                    };
-                image.Save();
+            //    Picture image = new Picture(filename)
+            //                        {
+            //                            GPSLongitude = Convert.ToDouble(gpsLongitude),
+            //                            GPSLatitude = Convert.ToDouble(gpsLatitude)
+            //                        };
+            //    image.Save();
 
-                line = reader.ReadLine();
+            //    line = reader.ReadLine();
             }
         }
     }
-}
