@@ -27,10 +27,11 @@ namespace PhotoMapper.Core
                 stream.WriteHeader();
                 Dictionary<string, string> columns = new Dictionary<string, string>();
                 columns.Add("ID", "Integer");
-                columns.Add("FilePath", "Char(50)");
+                columns.Add("FilePath", "Char(255)");
                 columns.Add("Date", "DateTime");
                 columns.Add("Direction_Ref", "Char(20)");
-                columns.Add("Direction_AntiClock", "Float");
+                columns.Add("Direction_MapInfo", "Float");
+                columns.Add("Direction_Clockwise", "Float");
 
                 stream.WriteColumns(columns);
 
@@ -42,7 +43,7 @@ namespace PhotoMapper.Core
                         double x = file.GPSLongitude;
                         double y = file.GPSLatitude;
                         stream.WritePoint(x, y, file.MapInfoDirection);
-                        stream.WriteData(0, file.Name.Trim(), file.DateTimeOriginal, file.DirectionRef, file.MapInfoDirection);
+                        stream.WriteData(0, file.Name.Trim(), file.DateTimeOriginal, file.DirectionRef, file.MapInfoDirection, file.Direction);
                     }
                     else
                     {

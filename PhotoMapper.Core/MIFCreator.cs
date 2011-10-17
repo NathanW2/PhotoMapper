@@ -47,9 +47,9 @@ namespace PhotoMapper.Core
             mifwritter.WriteLine(String.Format("        Symbol (100,10157824,14,\"MapInfo Cartographic\",49,{0})", direction.ToString("0.0")));
         }
 
-        public void WriteData(int p, string file, DateTime date,string directionref, double direction)
+        public void WriteData(int p, string file, DateTime date,string directionref, double mapinfoDirection, double direction)
         {
-            midwritter.WriteLine(p + "," + file + "," + date.ToString("yyyyMMddHHmmssfff") + "," + directionref + "," + direction);
+            midwritter.WriteLine(p + "," + file + "," + date.ToString("yyyyMMddHHmmssfff") + "," + directionref + "," + mapinfoDirection + "," + direction);
         }
 
         #region IDisposable Members

@@ -35,7 +35,10 @@ namespace PhotoMapper.Cmd
                 commandline.ContainsArg("outname") &&
                 commandline.Format != ImageProcessor.FormatFlags.None)
             {
-                List<Picture> pictures = GetPhotos(commandline.InDir);
+
+                bool recursive = commandline.ContainsArg("r");
+
+                List<Picture> pictures = GetPhotos(commandline.InDir, recursive);
                 imageProcessor.ProcessPictures(commandline.OutDir, commandline.OutName, pictures, commandline.Format);
 
                 Console.WriteLine("Complete! " + pictures.Count + " pictures processed");
@@ -50,7 +53,9 @@ namespace PhotoMapper.Cmd
                 && commandline.ContainsArg("outdir") 
                 && commandline.ContainsArg("indir"))
             {
-                List<Picture> pictures = GetPhotos(commandline.InDir);
+                bool recursive = commandline.ContainsArg("r");
+
+                List<Picture> pictures = GetPhotos(commandline.InDir, recursive);
                 imageProcessor.GenerateTxtFileForNullGPS(pictures, commandline.OutDir);
 #if DEBUG
                 Console.Read();
@@ -74,9 +79,10 @@ namespace PhotoMapper.Cmd
             return; 
         }
 
-        public static List<Picture> GetPhotos(string inputFrom)
+        public static List<Picture> GetPhotos(string inputFrom, bool R)
         {
-            string[] files = Directory.GetFiles(inputFrom, "*.jpg");
+            SearchOption option = R ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+            string[] files = Directory.GetFiles(inputFrom, "*.jpg", option);
 
             if (files.Length == 0)
             {
@@ -119,6 +125,7 @@ To update photos with GPS info:
        /indir:      Directory that contains the files to be processed, must be in quotes.
        /outdir:     Directory where the final MIF or TAB will be generated.
        /outname:    Name of the generated MIF or TAB file.
+       /r Process current folder and all sub folders. 
        /mif         Generates MIF file.
        /tab         Generates TAB file.
        /checkgps    Checks each photo for GPS information, exports a tab delimited file that can be used to update photos.
