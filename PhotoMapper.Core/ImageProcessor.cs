@@ -9,7 +9,7 @@ namespace PhotoMapper.Core
     public class ImageProcessor
     {
         [Flags]
-        public enum FormatFlags
+        public enum FileFormat
         {
             None = 0,
             MIF = 1,
@@ -93,18 +93,18 @@ namespace PhotoMapper.Core
         /// <param name="name">The name of the output file, multiple files will be created with different extensions.</param>
         /// <param name="pictures">The list of pictures to be processed.</param>
         /// <param name="flag">The file types that will be generated.</param>
-        public void ProcessPictures(string path, string name, List<Picture> pictures, FormatFlags flag)
+        public void ProcessPictures(string path, string name, List<Picture> pictures, FileFormat flag)
         {
-            if (flag.Has(FormatFlags.MIF) && flag.Has(FormatFlags.TAB))
+            if (flag.Has(FileFormat.MIF) && flag.Has(FileFormat.TAB))
             {
                 string mifpath = this.GenerateMIFFile(path, name, pictures);              
                 string tabpath = this.GenerateTABFile(mifpath);
             }
-            else if (flag == FormatFlags.MIF)
+            else if (flag == FileFormat.MIF)
             {
                 string mifpath = this.GenerateMIFFile(path, name, pictures);
             }
-            else if (flag == FormatFlags.TAB)
+            else if (flag == FileFormat.TAB)
             {
                 string mifpath = this.GenerateMIFFile(path, name, pictures);
                 string tabpath = this.GenerateTABFile(mifpath);

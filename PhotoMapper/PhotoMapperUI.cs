@@ -319,14 +319,14 @@ namespace PhotoMapper
             string path = this.outPathText.Text;
             string name = this.outFileName.Text;
 
-            ImageProcessor.FormatFlags flag = ImageProcessor.FormatFlags.None;
+            ImageProcessor.FileFormat flag = ImageProcessor.FileFormat.None;
 
             if (this.outTab.Checked && this.outMIF.Checked)
-                flag = ImageProcessor.FormatFlags.MIF | ImageProcessor.FormatFlags.TAB;
+                flag = ImageProcessor.FileFormat.MIF | ImageProcessor.FileFormat.TAB;
             else if (!this.outTab.Checked && this.outMIF.Checked)
-                flag = ImageProcessor.FormatFlags.MIF;
+                flag = ImageProcessor.FileFormat.MIF;
             else if (this.outTab.Checked && !this.outMIF.Checked)
-                flag = ImageProcessor.FormatFlags.TAB;
+                flag = ImageProcessor.FileFormat.TAB;
 
 
             process.ProcessPictures(path,name,pictures,flag);

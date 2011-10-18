@@ -92,20 +92,28 @@ namespace PhotoMapper.Core.CommandLine
             }
         }
 
-        public ImageProcessor.FormatFlags Format
+        public bool Recursive
+        {
+            get
+            {
+                return this.ContainsArg("r");
+            }
+        }
+
+        public ImageProcessor.FileFormat Format
         {
             get
             {
                 if (this.ContainsArg("tab") && this.ContainsArg("mif"))
-                    return ImageProcessor.FormatFlags.MIF | ImageProcessor.FormatFlags.TAB;
+                    return ImageProcessor.FileFormat.MIF | ImageProcessor.FileFormat.TAB;
                 
                 if (this.ContainsArg("mif"))
-                    return ImageProcessor.FormatFlags.MIF;
+                    return ImageProcessor.FileFormat.MIF;
                 
                 if (this.ContainsArg("tab"))
-                    return ImageProcessor.FormatFlags.TAB;
+                    return ImageProcessor.FileFormat.TAB;
                 
-                return ImageProcessor.FormatFlags.None;
+                return ImageProcessor.FileFormat.None;
             }
         }
     }

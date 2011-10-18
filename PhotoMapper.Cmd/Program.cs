@@ -4,11 +4,14 @@ using System.IO;
 using log4net;
 using PhotoMapper.Core;
 using PhotoMapper.Core.CommandLine;
+using NDesk.Options;
+using System.Text;
 
 namespace PhotoMapper.Cmd
 {
     class Program
     {
+        static int verbosity;
         /// <summary>
         /// Gets the logger for this class.
         /// </summary>
@@ -16,65 +19,85 @@ namespace PhotoMapper.Cmd
 
         static void Main(string[] args)
         {
-            ImageProcessor imageProcessor = new ImageProcessor();
 
-            //Prints the status of the ImageProcessor to the console window.
-            imageProcessor.ProgessUpdated += Console.WriteLine;
+            bool help = false;
+            bool about = false;
+            string name = "";
+            bool recursive = false;
+            ImageProcessor.FileFormat format = ImageProcessor.FileFormat.None;
+            var p = new OptionSet()
+            {
+                { "f|format=",  "output format.  Can be 'mif','tab' or 'mif&tab' ",  v => 
+                    {
+                        switch(v)
+                        {
+                            case "mif":
+                                format = ImageProcessor.FileFormat.MIF;
+                                break;
+                            case "tab":
+                                format = ImageProcessor.FileFormat.TAB;
+                                break;
+                            case "mif&tab":
+                                format = ImageProcessor.FileFormat.MIF | ImageProcessor.FileFormat.TAB;
+                                break;
+                            default:
+                                format = ImageProcessor.FileFormat.None;
+                                break;
+                        }
+                    }},
+                { "n|name=",  "name of the output file",  v => name = v},
+                { "r|recursive",  "process all photo in the current directory and all sub folders.",  v => recursive = v != null},
+                { "v", "increase debug message verbosity", v => { if (v != null) ++verbosity; } },
+                { "A|about",  "ouptut info about this program and exit.",  v => about = v != null},
+                { "h|?|help",  "show this message and exit.",  v => help = v != null},
+            };
 
-            CommandLineArgs commandline = CommandLineArgs.ParseCommandLine(args);
+            List<String> extra;
+            try
+            {
+                extra = p.Parse(args);
+            }
+            catch (OptionException e)
+            {
+                Console.Write("PhotoMapper.Cmd: ");
+                Console.WriteLine(e.Message);
+                Console.WriteLine("Try `PhotoMapper.Cmd --help' for more information.");
+#if DEBUG
+                Console.Read();
+#endif
+                return;
+            }
 
-            // Print the help information.
-            if (commandline.ContainsArg("?"))
-                PrintHelp();
-
-            if (commandline.ContainsArg("about"))
+            if (help)
+                PrintHelp(p);
+            if (about)
                 PrintAbout();
-
-            if (commandline.ContainsArg("indir") &&
-                commandline.ContainsArg("outdir") &&
-                commandline.ContainsArg("outname") &&
-                commandline.Format != ImageProcessor.FormatFlags.None)
+            if (extra.Count < 2)
             {
-
-                bool recursive = commandline.ContainsArg("r");
-
-                List<Picture> pictures = GetPhotos(commandline.InDir, recursive);
-                imageProcessor.ProcessPictures(commandline.OutDir, commandline.OutName, pictures, commandline.Format);
-
-                Console.WriteLine("Complete! " + pictures.Count + " pictures processed");
-
+                Debug("Missing input and output folder");
+                PrintHelp(p);
+            }
+            else if (extra.Count == 2 && !String.IsNullOrEmpty(name) 
+                && format != ImageProcessor.FileFormat.None)
+            {
+                var infolder = extra[0];
+                var outfolder = extra[1];
+                List<Picture> pictures = GetPhotos(infolder, recursive);
+                if (pictures == null)
+                {
+                    Debug("No images found to process");
 #if DEBUG
-                Console.Read();
+                    Console.Read();
 #endif
-                return;
+                    return;
+                }
+
+                ImageProcessor proc = new ImageProcessor();
+                proc.ProgessUpdated += Debug;
+
             }
-
-            if (commandline.ContainsArg("checkgps")
-                && commandline.ContainsArg("outdir") 
-                && commandline.ContainsArg("indir"))
-            {
-                bool recursive = commandline.ContainsArg("r");
-
-                List<Picture> pictures = GetPhotos(commandline.InDir, recursive);
-                imageProcessor.GenerateTxtFileForNullGPS(pictures, commandline.OutDir);
 #if DEBUG
-                Console.Read();
-#endif
-                return; 
-            }
-
-            if (commandline.ContainsArg("fillgps") &&
-                commandline.ContainsArg("infofile"))
-            {
-                string infofile = commandline["infofile"];
-                imageProcessor.UpdatePhotos(infofile);
-                return;
-            }
-
-            //If we get here then we have invaild args.
-            PrintHelp();
-#if DEBUG
-                Console.Read();
+            Console.Read();
 #endif
             return; 
         }
@@ -86,16 +109,19 @@ namespace PhotoMapper.Cmd
 
             if (files.Length == 0)
             {
-                Console.WriteLine("No files to process");
+                Debug("No files to process");
                 return null;
             }
 
-            Console.WriteLine("Building list of photos to process");
+            Debug("Found {0} files ", files.Length);
+            Debug("Building list of photos to process");
             List<Picture> pics = new List<Picture>();
+            int count = 0;
             foreach (var file in files)
             {
                 Picture pic = new Picture(file);
                 pics.Add(new Picture(file));
+                ++count;
             }
 
             return pics;
@@ -106,32 +132,26 @@ namespace PhotoMapper.Cmd
             Console.WriteLine(About.AboutString);
         }
 
-        public static void PrintHelp()
+        public static void PrintHelp(OptionSet p)
         {
             Console.WriteLine(@"
+Usage: PhotoMapper.Cmd [OPTIONS]+ infolder outfolder 
+Generates a MapInfo mif and/or tab from a photos with GPS coordinates.");
+            p.WriteOptionDescriptions(Console.Out);
+        }
 
-============Photo Mapper Command Help============
-============by Nathan Woodrow============
+        static void Debug(string format)
+        {
+            Debug(format,"");
+        }
 
-To generate map files from photos:
-    PhotoMapper.exe /indir:[path] /outdir:[path] /outname:[path] [/mif] [/tab] [/?] [/infofile:[path]] 
-
-To check photos for missing GPS info:
-    PhotoMapper.exe /checkgps /indir:[path] /outdir:[path] 
-
-To update photos with GPS info:
-    PhotoMapper.exe /fillgps /indir:[path] /infofile:[path]    
-   
-       /indir:      Directory that contains the files to be processed, must be in quotes.
-       /outdir:     Directory where the final MIF or TAB will be generated.
-       /outname:    Name of the generated MIF or TAB file.
-       /r Process current folder and all sub folders. 
-       /mif         Generates MIF file.
-       /tab         Generates TAB file.
-       /checkgps    Checks each photo for GPS information, exports a tab delimited file that can be used to update photos.
-       /fillgps     Updates each photo listed in the /infofile with GPS info in /infofile
-       /infofile:   A tab delimited file that contains the list of photos and the GPS info to update.
-       /?           Prints this help message");
+        static void Debug(string format, params object[] args)
+        {
+            if (verbosity > 0)
+            {
+                Console.Write("# ");
+                Console.WriteLine(format, args);
+            }
         }
     }
 }
