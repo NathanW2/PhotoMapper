@@ -94,6 +94,7 @@ namespace PhotoMapper.Cmd
 
                 ImageProcessor proc = new ImageProcessor();
                 proc.ProgessUpdated += Debug;
+                proc.ProcessPictures(outfolder, name, pictures, format);
 
             }
 #if DEBUG
@@ -116,11 +117,15 @@ namespace PhotoMapper.Cmd
             Debug("Found {0} files ", files.Length);
             Debug("Building list of photos to process");
             List<Picture> pics = new List<Picture>();
-            int count = 0;
+            int count = 1;
             foreach (var file in files)
             {
                 Picture pic = new Picture(file);
                 pics.Add(new Picture(file));
+                if (verbosity > 0)
+                {
+                    drawTextProgressBar(count, files.Length);
+                }
                 ++count;
             }
 
@@ -152,6 +157,31 @@ Generates a MapInfo mif and/or tab from a photos with GPS coordinates.");
                 Console.Write("# ");
                 Console.WriteLine(format, args);
             }
+        }
+
+        private static void drawTextProgressBar(int progress, int total)
+        {
+            StringBuilder builder = new StringBuilder("[");
+            float onechunk = 30.0f / total;
+
+            //draw filled part  
+            int position = 1;
+            for (int i = 0; i < onechunk * progress; i++)
+            {
+                Console.CursorLeft = position++;
+                builder.Append("=");
+            }
+
+            //draw unfilled part  
+            for (int i = position; i < 31; i++)
+            {
+                builder.Append(" ");
+            }
+            builder.Append("]");
+            Console.Write("\r" + builder.ToString() + progress.ToString() + " of " + total.ToString() + " ");
+
+            if (progress == total)
+                Console.WriteLine();
         }
     }
 }
