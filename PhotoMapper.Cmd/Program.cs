@@ -6,6 +6,7 @@ using PhotoMapper.Core;
 using PhotoMapper.Core.CommandLine;
 using NDesk.Options;
 using System.Text;
+using System.Diagnostics;
 
 namespace PhotoMapper.Cmd
 {
@@ -16,14 +17,14 @@ namespace PhotoMapper.Cmd
         /// Gets the logger for this class.
         /// </summary>
         private static readonly ILog log = Logging.GetLog(typeof(Program));
-
+                
         static void Main(string[] args)
         {
-
             bool help = false;
             bool about = false;
             string name = "";
             bool recursive = false;
+            bool timed = false;
             ImageProcessor.FileFormat format = ImageProcessor.FileFormat.None;
             var p = new OptionSet()
             {
@@ -48,6 +49,7 @@ namespace PhotoMapper.Cmd
                 { "n|name=",  "name of the output file",  v => name = v},
                 { "r|recursive",  "process all photo in the current directory and all sub folders.",  v => recursive = v != null},
                 { "v", "increase debug message verbosity", v => { if (v != null) ++verbosity; } },
+                { "t|timed", "enable timing of processing.", v => timed = v != null },
                 { "A|about",  "ouptut info about this program and exit.",  v => about = v != null},
                 { "h|?|help",  "show this message and exit.",  v => help = v != null},
             };
@@ -74,7 +76,7 @@ namespace PhotoMapper.Cmd
                 PrintAbout();
             if (extra.Count < 2)
             {
-                Debug("Missing input and output folder");
+                Error("Missing input and output folder");
                 PrintHelp(p);
             }
             else if (extra.Count == 2 && !String.IsNullOrEmpty(name) 
@@ -85,22 +87,40 @@ namespace PhotoMapper.Cmd
                 List<Picture> pictures = GetPhotos(infolder, recursive);
                 if (pictures == null)
                 {
-                    Debug("No images found to process");
+                    Error("No images found to process");
 #if DEBUG
                     Console.Read();
 #endif
                     return;
                 }
 
+                StringBuilder builder = new StringBuilder();
+                Stopwatch timer = new Stopwatch();
+                if (timed)
+                {
+                    timer.Start();
+                }
+               
                 ImageProcessor proc = new ImageProcessor();
                 proc.ProgessUpdated += Debug;
                 proc.ProcessPictures(outfolder, name, pictures, format);
 
+                if (timer.IsRunning)
+                {
+                    timer.Stop();
+                    builder.Append("# Process time: " + timer.Elapsed);
+                    Debug(builder.ToString());
+                }
             }
 #if DEBUG
             Console.Read();
 #endif
             return; 
+        }
+
+        private static void Error(string p)
+        {
+            Console.Error.WriteLine("Error! " + p);
         }
 
         public static List<Picture> GetPhotos(string inputFrom, bool R)
@@ -109,10 +129,7 @@ namespace PhotoMapper.Cmd
             string[] files = Directory.GetFiles(inputFrom, "*.jpg", option);
 
             if (files.Length == 0)
-            {
-                Debug("No files to process");
                 return null;
-            }
 
             Debug("Found {0} files ", files.Length);
             Debug("Building list of photos to process");
@@ -164,7 +181,7 @@ Generates a MapInfo mif and/or tab from a photos with GPS coordinates.");
             StringBuilder builder = new StringBuilder("[");
             float onechunk = 30.0f / total;
 
-            //draw filled part  
+            //draw filled part
             int position = 1;
             for (int i = 0; i < onechunk * progress; i++)
             {
