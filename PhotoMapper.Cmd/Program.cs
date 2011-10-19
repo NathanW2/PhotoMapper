@@ -7,6 +7,7 @@ using PhotoMapper.Core.CommandLine;
 using NDesk.Options;
 using System.Text;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace PhotoMapper.Cmd
 {
@@ -24,7 +25,7 @@ namespace PhotoMapper.Cmd
             bool about = false;
             string name = "";
             bool recursive = false;
-            bool timed = false;
+            bool timed = false;       
             ImageProcessor.FileFormat format = ImageProcessor.FileFormat.None;
             var p = new OptionSet()
             {
@@ -74,9 +75,13 @@ namespace PhotoMapper.Cmd
                 PrintAbout();
 
             if (help || about)
+#if DEBUG
+                Console.Read();
+#else
                 return;
+#endif
 
-            if (extra.Count < 2)
+                if (extra.Count < 2)
             {
                 Error("Missing input and output folder");
                 PrintHelp(p);
