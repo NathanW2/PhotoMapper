@@ -17,7 +17,7 @@ namespace PhotoMapper.Cmd
         /// <summary>
         /// Gets the logger for this class.
         /// </summary>
-        private static readonly ILog log = Logging.GetLog(typeof(Program));
+        //private static readonly ILog log = Logging.GetLog(typeof(Program));
                 
         static void Main(string[] args)
         {
@@ -134,6 +134,7 @@ namespace PhotoMapper.Cmd
         private static void Error(string p)
         {
             Console.Error.WriteLine("Error! " + p);
+            //log.Error("Error! " + p);
         }
 
         public static List<Picture> GetPhotos(string inputFrom, bool R)
@@ -186,6 +187,7 @@ Generates a MapInfo mif and/or tab from a photos with GPS coordinates.");
             {
                 Console.Write("# ");
                 Console.WriteLine(format, args);
+                //log.DebugFormat(format, args);
             }
         }
 
