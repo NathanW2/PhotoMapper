@@ -61,9 +61,7 @@ namespace PhotoMapper.Cmd
             }
             catch (OptionException e)
             {
-                Console.Write("PhotoMapper.Cmd: ");
-                Console.WriteLine(e.Message);
-                Console.WriteLine("Try `PhotoMapper.Cmd --help' for more information.");
+                Error("PhotoMapper.Cmd: \n" + e.Message + "Try `PhotoMapper.Cmd --help' for more information.");
 #if DEBUG
                 Console.Read();
 #endif
@@ -74,11 +72,16 @@ namespace PhotoMapper.Cmd
                 PrintHelp(p);
             if (about)
                 PrintAbout();
+
+            if (help || about)
+                return;
+
             if (extra.Count < 2)
             {
                 Error("Missing input and output folder");
                 PrintHelp(p);
             }
+
             else if (extra.Count == 2 && !String.IsNullOrEmpty(name) 
                 && format != ImageProcessor.FileFormat.None)
             {
