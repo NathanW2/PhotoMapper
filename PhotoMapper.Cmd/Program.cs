@@ -85,8 +85,8 @@ namespace PhotoMapper.Cmd
             else if (extra.Count == 2 && !String.IsNullOrEmpty(name) 
                 && format != ImageProcessor.FileFormat.None)
             {
-                var infolder = extra[0];
-                var outfolder = extra[1];
+                var infolder = extra[0] == "." ? expandCurrentPath() : extra[0];
+                var outfolder = extra[1] == "." ? expandCurrentPath() : extra[1];
                 List<Picture> pictures = GetPhotos(infolder, recursive);
                 if (pictures == null)
                 {
@@ -119,6 +119,11 @@ namespace PhotoMapper.Cmd
             Console.Read();
 #endif
             return; 
+        }
+
+        private static string expandCurrentPath()
+        {
+            return Directory.GetCurrentDirectory();
         }
 
         private static void Error(string p)
