@@ -9,7 +9,7 @@ namespace PhotoMapper.Core
         /// <summary>
         /// Get the logger for this class.
         /// </summary>
-        private static readonly ILog log = Logging.GetLog(typeof(MapinfoWrapper));
+        private static readonly ILog log = Logging.log;
 
         DMapInfo mapinfo;
         private MapinfoWrapper(DMapInfo mapInfo)

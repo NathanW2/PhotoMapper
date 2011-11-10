@@ -84,6 +84,11 @@ namespace PhotoMapper.Core
         {
             get { return this.fileinfo.FullName; }       
         }
+
+        public string FilePath
+        {
+            get { return this.fileinfo.Directory.FullName; }
+        }
         
 
         public string DirectionRef

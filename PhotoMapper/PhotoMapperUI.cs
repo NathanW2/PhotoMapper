@@ -15,7 +15,7 @@ namespace PhotoMapper
         /// <summary>
         /// Get the logger for this class.
         /// </summary>
-        private static readonly ILog log = Logging.GetLog(typeof(PhotoMapperUI));
+        private static readonly ILog log = Logging.log;
 
         public delegate void Action();
         BackgroundWorker maploader = new BackgroundWorker();

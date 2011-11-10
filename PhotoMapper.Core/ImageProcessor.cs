@@ -16,7 +16,6 @@ namespace PhotoMapper.Core
             TAB = 2
         }
 
-        IEnumerable<Picture> pics;
         public event Action<string> ProgessUpdated;
 
         public string GenerateMIFFile(string outPath,string outFileName, IEnumerable<Picture> pics)
@@ -27,6 +26,7 @@ namespace PhotoMapper.Core
                 stream.WriteHeader();
                 Dictionary<string, string> columns = new Dictionary<string, string>();
                 columns.Add("ID", "Integer");
+                columns.Add("FileName", "Char(255)");
                 columns.Add("FilePath", "Char(255)");
                 columns.Add("Date", "DateTime");
                 columns.Add("Direction_Ref", "Char(20)");
@@ -40,10 +40,9 @@ namespace PhotoMapper.Core
                     if (file.HasGPSInformation)
                     {
                         this.ReportProgress("   Working on ->" + file.Name);
-                        double x = file.GPSLongitude;
-                        double y = file.GPSLatitude;
-                        stream.WritePoint(x, y, file.MapInfoDirection);
-                        stream.WriteData(0, file.Name.Trim(), file.DateTimeOriginal, file.DirectionRef, file.MapInfoDirection, file.Direction);
+
+                        stream.WritePhoto(file);
+                        
                     }
                     else
                     {
@@ -110,6 +109,8 @@ namespace PhotoMapper.Core
                 string tabpath = this.GenerateTABFile(mifpath);
                 this.ReportProgress("Deleting MIF file");
                 File.Delete(mifpath);
+                string midpath = Path.ChangeExtension(mifpath, "mid");
+                File.Delete(midpath);
             }
         }
 

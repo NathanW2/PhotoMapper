@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace PhotoMapper.Core
 {
@@ -41,15 +42,22 @@ namespace PhotoMapper.Core
             mifwritter.WriteLine("Data");
         }
 
-        public void WritePoint(double x, double y,double direction)
+        private void WritePoint(double x, double y, double direction)
         {
             mifwritter.WriteLine(string.Format("Point {0} {1}", x, y));
             mifwritter.WriteLine(String.Format("        Symbol (100,10157824,14,\"MapInfo Cartographic\",49,{0})", direction.ToString("0.0")));
         }
 
-        public void WriteData(int p, string file, DateTime date,string directionref, double mapinfoDirection, double direction)
+        private void WriteData(params string[] attibutes)
         {
-            midwritter.WriteLine(p + "," + file + "," + date.ToString("yyyyMMddHHmmssfff") + "," + directionref + "," + mapinfoDirection + "," + direction);
+            StringBuilder builder = new StringBuilder();
+            foreach (var item in attibutes)
+            {
+                builder.AppendFormat("{0},", item);
+            }
+            string line = builder.ToString();
+            line = line.TrimEnd(',');
+            midwritter.WriteLine(line);
         }
 
         #region IDisposable Members
@@ -62,6 +70,19 @@ namespace PhotoMapper.Core
 
         #endregion
 
-
+        public void WritePhoto(Picture file)
+        {
+            double x = file.GPSLongitude;
+            double y = file.GPSLatitude;
+            this.WritePoint(x, y, file.MapInfoDirection);
+            this.WriteData(new string[] {
+                "0", 
+                file.Name.Trim(), 
+                file.FilePath, 
+                file.DateTimeOriginal.ToString("yyyyMMddHHmmssfff"), 
+                file.DirectionRef, 
+                file.MapInfoDirection.ToString(), 
+                file.Direction.ToString()});
+        }
     }
 }
