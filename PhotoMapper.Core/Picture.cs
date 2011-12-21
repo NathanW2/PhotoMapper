@@ -97,7 +97,7 @@ namespace PhotoMapper.Core
             {
                 if (this.HasCompassInfo)
                 {
-                    GPSDirectionRef directRef = (GPSDirectionRef)this.image[ExifTag.GPSDestBearingRef].Value;
+                    GPSDirectionRef directRef = (GPSDirectionRef)this.image[ExifTag.GPSImgDirectionRef].Value;
                     return directRef == GPSDirectionRef.TrueDirection ? "True North" : "Magnetic North";
                 }
                 return "No Compass Info";
