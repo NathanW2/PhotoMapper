@@ -98,7 +98,7 @@ namespace PhotoMapper.Core
                 if (this.HasCompassInfo)
                 {
                     GPSDirectionRef directRef = (GPSDirectionRef)this.image[ExifTag.GPSImgDirectionRef].Value;
-                    return directRef == GPSDirectionRef.TrueDirection ? "True North" : "Magnetic North";
+                    return directRef == GPSDirectionRef.TrueDirection ? "True Direction" : "Magnetic North";
                 }
                 return "No Compass Info";
             }
@@ -113,7 +113,13 @@ namespace PhotoMapper.Core
             {
                 if (this.HasCompassInfo)
                 {
-                    return 360 - (this.image[ExifTag.GPSImgDirection] as ExifURational).ToFloat();
+                    GPSDirectionRef directRef = (GPSDirectionRef)this.image[ExifTag.GPSImgDirectionRef].Value;
+                    float value = (this.image[ExifTag.GPSImgDirection] as ExifURational).ToFloat();
+                    if (directRef == GPSDirectionRef.TrueDirection)
+                    { 
+                        value += 90;
+                    }
+                    return Math.Abs(360 - value);
                 }
                 return 0;
             }
@@ -149,10 +155,11 @@ namespace PhotoMapper.Core
             get
             {
                 object test;
-                return ((this.image.Properties.ContainsKey(ExifTag.GPSLatitude) && !ThrowsException(() => test = this.GPSLatitude)) &&
+                return ((this.image.Properties.ContainsKey(ExifTag.GPSLatitude) && !ThrowsException(() => test = this.GPSLatitude)) && !float.IsNaN(this.GPSLatitude) &&
                         (this.image.Properties.ContainsKey(ExifTag.GPSLatitudeRef) && !ThrowsException(() => test = this.image[ExifTag.GPSLatitudeRef])) &&
-                        (this.image.Properties.ContainsKey(ExifTag.GPSLongitude) && !ThrowsException(() => test = this.GPSLongitude)) &&
+                        (this.image.Properties.ContainsKey(ExifTag.GPSLongitude) && !ThrowsException(() => test = this.GPSLongitude)) && !float.IsNaN(this.GPSLatitude) &&
                         (this.image.Properties.ContainsKey(ExifTag.GPSLongitudeRef)) && !ThrowsException(() => test = this.image[ExifTag.GPSLongitudeRef]));
+                
             }
         }
 
