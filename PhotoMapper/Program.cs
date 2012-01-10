@@ -11,7 +11,7 @@ namespace PhotoMapper
         /// <summary>
         /// Gets the logger for this class.
         /// </summary>
-        private static readonly ILog log = Logging.GetLog(typeof(Program));
+        private static readonly ILog log = Logging.log;
 
         /// <summary>
         /// The main entry point for the application.

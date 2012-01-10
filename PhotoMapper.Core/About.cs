@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using log4net;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace PhotoMapper.Core
 {
@@ -11,7 +13,7 @@ namespace PhotoMapper.Core
         {
             get
             {
-                return
+                string about = 
                     @"PhotoMapper Utility by Nathan Woodrow
 http://code.google.com/p/nathansmapinfoprojects/
 http://woostuff.wordpress.com/
@@ -33,7 +35,22 @@ Version 1.5.1.0
 - Added background logging.
 - Supports updating image GPS info via command line.
     - See help file section 'Updating GPS Info' for details
-- Output list of files with no GPS info via command line";
+- Output list of files with no GPS info via command line
+
+Version info:
+
+";
+                StringBuilder builder = new StringBuilder();
+                var names = AppDomain.CurrentDomain.GetAssemblies();
+                foreach (Assembly assm in names)
+                {
+                    //string name = assm.GetName().Name;
+                    //assm.ImageRuntimeVersion
+                    string version = FileVersionInfo.GetVersionInfo(assm.Location).FileVersion;
+                    builder.Append(assm.GetName().Name + " " + version + "\n");
+                }
+                about += builder.ToString();
+                return about;
             }
         }
     }

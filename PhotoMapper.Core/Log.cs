@@ -12,9 +12,7 @@ namespace PhotoMapper.Core
     /// </summary>
     public static class Logging
     {
-        /// <summary>
-        /// Creates an log4net <see cref="ILog"/> for the provided type.
-        /// </summary>
-        public static Func<Type, ILog> GetLog = type => log4net.LogManager.GetLogger(type.GetType());
+        public static Func<String, ILog> GetLog = name => log4net.LogManager.GetLogger(name);
+        public static ILog log = log4net.LogManager.GetLogger("PhotoMapper");
     }
 }

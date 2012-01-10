@@ -3,21 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Enum.Extensions;
-using Exiv2Net;
 
 namespace PhotoMapper.Core
 {
     public class ImageProcessor
     {
         [Flags]
-        public enum FormatFlags
+        public enum FileFormat
         {
             None = 0,
             MIF = 1,
             TAB = 2
         }
 
-        IEnumerable<Picture> pics;
         public event Action<string> ProgessUpdated;
 
         public string GenerateMIFFile(string outPath,string outFileName, IEnumerable<Picture> pics)
@@ -28,10 +26,12 @@ namespace PhotoMapper.Core
                 stream.WriteHeader();
                 Dictionary<string, string> columns = new Dictionary<string, string>();
                 columns.Add("ID", "Integer");
-                columns.Add("FilePath", "Char(50)");
+                columns.Add("FileName", "Char(255)");
+                columns.Add("FilePath", "Char(255)");
                 columns.Add("Date", "DateTime");
                 columns.Add("Direction_Ref", "Char(20)");
-                columns.Add("Direction_AntiClock", "Float");
+                columns.Add("Direction_MapInfo", "Float");
+                columns.Add("Direction_Clockwise", "Float");
 
                 stream.WriteColumns(columns);
 
@@ -40,10 +40,9 @@ namespace PhotoMapper.Core
                     if (file.HasGPSInformation)
                     {
                         this.ReportProgress("   Working on ->" + file.Name);
-                        double x = file.GPSLongitude;
-                        double y = file.GPSLatitude;
-                        stream.WritePoint(x, y, file.Direction);
-                        stream.WriteData(0, file.Name.Trim(), file.DateTimeOriginal, file.DirectionRef, file.Direction);
+
+                        stream.WritePhoto(file);
+                        
                     }
                     else
                     {
@@ -93,23 +92,25 @@ namespace PhotoMapper.Core
         /// <param name="name">The name of the output file, multiple files will be created with different extensions.</param>
         /// <param name="pictures">The list of pictures to be processed.</param>
         /// <param name="flag">The file types that will be generated.</param>
-        public void ProcessPictures(string path, string name, List<Picture> pictures, FormatFlags flag)
+        public void ProcessPictures(string path, string name, List<Picture> pictures, FileFormat flag)
         {
-            if (flag.Has(FormatFlags.MIF) && flag.Has(FormatFlags.TAB))
+            if (flag.Has(FileFormat.MIF) && flag.Has(FileFormat.TAB))
             {
                 string mifpath = this.GenerateMIFFile(path, name, pictures);              
                 string tabpath = this.GenerateTABFile(mifpath);
             }
-            else if (flag == FormatFlags.MIF)
+            else if (flag == FileFormat.MIF)
             {
                 string mifpath = this.GenerateMIFFile(path, name, pictures);
             }
-            else if (flag == FormatFlags.TAB)
+            else if (flag == FileFormat.TAB)
             {
                 string mifpath = this.GenerateMIFFile(path, name, pictures);
                 string tabpath = this.GenerateTABFile(mifpath);
                 this.ReportProgress("Deleting MIF file");
                 File.Delete(mifpath);
+                string midpath = Path.ChangeExtension(mifpath, "mid");
+                File.Delete(midpath);
             }
         }
 
@@ -161,30 +162,30 @@ namespace PhotoMapper.Core
 
         public void UpdatePhotos(string infofile)
         {
-            StreamReader reader = new StreamReader(infofile);
-            string line = reader.ReadLine();
+            throw new NotImplementedException("Updating isn't supported yet");
+            //StreamReader reader = new StreamReader(infofile);
+            //string line = reader.ReadLine();
             
-            //If we are a header line just read the next line.
-            if (line == FileHeader)
-                line = reader.ReadLine();
+            ////If we are a header line just read the next line.
+            //if (line == FileHeader)
+            //    line = reader.ReadLine();
 
-            while(!String.IsNullOrEmpty(line))
-            {
-                string[] values = line.Split('\t');
+            //while(!String.IsNullOrEmpty(line))
+            //{
+            //    string[] values = line.Split('\t');
 
-                string filename = values[0];
-                string gpsLongitude = values[1];
-                string gpsLatitude = values[2];
+            //    string filename = values[0];
+            //    string gpsLongitude = values[1];
+            //    string gpsLatitude = values[2];
                 
-                Picture image = new Picture(filename)
-                                    {
-                                        GPSLongitude = Convert.ToDouble(gpsLongitude),
-                                        GPSLatitude = Convert.ToDouble(gpsLatitude)
-                                    };
-                image.Save();
+            //    Picture image = new Picture(filename)
+            //                        {
+            //                            GPSLongitude = Convert.ToDouble(gpsLongitude),
+            //                            GPSLatitude = Convert.ToDouble(gpsLatitude)
+            //                        };
+            //    image.Save();
 
-                line = reader.ReadLine();
+            //    line = reader.ReadLine();
             }
         }
     }
-}

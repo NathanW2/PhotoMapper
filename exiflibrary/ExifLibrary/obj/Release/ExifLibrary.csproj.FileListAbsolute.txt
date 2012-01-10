@@ -1,0 +1,6 @@
+C:\Documents and Settings\woodrown\Desktop\Coding\nathansmapinfoprojects-git\trunk\PhotoMapper\exiflibrary\ExifLibrary\bin\Release\ExifLibrary.dll.config
+C:\Documents and Settings\woodrown\Desktop\Coding\nathansmapinfoprojects-git\trunk\PhotoMapper\exiflibrary\ExifLibrary\bin\Release\ExifLibrary.dll
+C:\Documents and Settings\woodrown\Desktop\Coding\nathansmapinfoprojects-git\trunk\PhotoMapper\exiflibrary\ExifLibrary\bin\Release\ExifLibrary.pdb
+C:\Documents and Settings\woodrown\Desktop\Coding\nathansmapinfoprojects-git\trunk\PhotoMapper\exiflibrary\ExifLibrary\obj\Release\ResolveAssemblyReference.cache
+C:\Documents and Settings\woodrown\Desktop\Coding\nathansmapinfoprojects-git\trunk\PhotoMapper\exiflibrary\ExifLibrary\obj\Release\ExifLibrary.dll
+C:\Documents and Settings\woodrown\Desktop\Coding\nathansmapinfoprojects-git\trunk\PhotoMapper\exiflibrary\ExifLibrary\obj\Release\ExifLibrary.pdb
